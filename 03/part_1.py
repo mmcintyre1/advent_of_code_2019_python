@@ -28,19 +28,15 @@ def track_path(path):
     return nodes
 
 
-def compute_manhattan(nodes):
-    overlaps = []
-    for east_west, north_south in nodes:
-        # filter out starting point
-        if east_west == 0 and north_south == 0:
-            continue
-        overlaps.append(abs(east_west) + abs(north_south))
-    return min(overlaps)
+def compute_all_manhattan(nodes):
+    return [abs(east_west) + abs(north_south) for east_west, north_south in nodes]
 
 
-path_1 = track_path(parse_path(puzzle_input.path_1))
-path_2 = track_path(parse_path(puzzle_input.path_2))
+if __name__ == '__main__':
+    path_1 = track_path(parse_path(puzzle_input.path_1))
+    path_2 = track_path(parse_path(puzzle_input.path_2))
 
-overlap = compute_manhattan(set(path_1) & set(path_2))
-print(overlap)
+    manhattans = compute_all_manhattan(set(path_1) & set(path_2))
+    print(min(m for m in manhattans if m))
+
 
