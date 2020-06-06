@@ -12,7 +12,7 @@ class IntCodeComputer:
             1: self.add,
             2: self.multiply,
             3: self.get_input,
-            4: self.print,
+            4: self.print_code,
             5: self.jump,
             6: self.jump,
             7: self.compare,
@@ -61,7 +61,7 @@ class IntCodeComputer:
         num = int(input("What is your input?"))
         self.set_num(num, mode=self.current_op_code[-2])
 
-    def print(self):
+    def print_code(self):
         print(self.get_num(mode=self.current_op_code[-2]))
 
     def jump(self):
