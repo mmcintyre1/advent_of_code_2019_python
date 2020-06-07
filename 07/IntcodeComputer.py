@@ -105,7 +105,13 @@ class IntCodeComputer:
         self.set_num(num, mode=self.get_mode(1))
 
     def print_code(self):
-        LOG.info(f"Output: {self.get_num(mode=self.get_mode(1))}")
+        """Prints either using a log object is one has a handler added, or
+        directly to the stdout via print()"""
+        formatted_msg = f"Output: {self.get_num(mode=self.get_mode(1))}"
+        if not len(LOG.root.handlers):
+            print(formatted_msg)
+        else:
+            LOG.info(formatted_msg)
 
     def jump(self):
         if self.current_op_code[0] == 5:
