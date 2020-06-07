@@ -22,16 +22,9 @@ class IntCodeComputer:
     is evaluated left to right.
     """
 
-    def __init__(self, program_input: List[int], custom_inputs):
-        """
-        Takes a program input list of integers, as well as setting the
-        current position as 0 and registering all opcode operations in an instance-
-        variable process_tree.
-
-        :param program_input: a list of integers or program instructions
-        """
-        self.program_input = program_input
-        self.custom_inputs = custom_inputs
+    def __init__(self):
+        self.program_input = None
+        self.custom_inputs = None
         self.current_position = 0
         self.current_op_code = None
 
@@ -142,7 +135,10 @@ class IntCodeComputer:
         else:
             self.set_num(0, mode=self.get_mode(3))
 
-    def compute(self):
+    def compute(self, program_input, custom_inputs):
+        self.program_input = program_input
+        self.custom_inputs = custom_inputs
+
         while self.program_input[self.current_position] != 99:
             LOG.info(f"{self.current_position} - Operating on new instructions.")
             self.set_op_code()
@@ -197,5 +193,5 @@ if __name__ == '__main__':
                     1001, 223, 1, 223, 108, 226, 226, 224, 102, 2, 223, 223, 1005, 224, 644, 1001, 223, 1, 223, 8, 677,
                     226, 224, 1002, 223, 2, 223, 1005, 224, 659, 1001, 223, 1, 223, 1008, 677, 677, 224, 1002, 223, 2,
                     223, 1006, 224, 674, 1001, 223, 1, 223, 4, 223, 99, 226]
-    computer = IntCodeComputer(instructions, [1])
-    computer.compute()
+    computer = IntCodeComputer()
+    computer.compute(instructions, [1])
