@@ -2,25 +2,25 @@ import logging
 import sys
 from itertools import permutations
 
-from puzzle_input import puzzle_input
 from IntcodeComputer import IntCodeComputer
-
-
-def get_output(computer, instructions, thruster_sequence):
-    current_output = 0
-    for code in thruster_sequence:
-        current_output = computer.compute(instructions, [code, current_output])
-
-    return current_output
+from puzzle_input import puzzle_input
 
 
 def main():
-    computer = IntCodeComputer()
     input_sequences = list(permutations(range(5), 5))
 
     max_output = 0
     for seq in input_sequences:
-        output = get_output(computer, puzzle_input, seq)
+        # setup of classes
+        computers = [IntCodeComputer(puzzle_input[:]) for _ in range(5)]
+        for computer, setting in zip(computers, seq):
+            computer.custom_inputs.append(setting)
+
+        # compute outputs
+        output = 0
+        for computer in computers:
+            output = computer.compute(output)
+
         if output > max_output:
             max_output = output
 
