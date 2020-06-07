@@ -27,6 +27,7 @@ class IntCodeComputer:
         self.custom_inputs = None
         self.current_position = 0
         self.current_op_code = None
+        self.current_output = None
 
         self.process_tree = {
             1: self.add,
@@ -38,6 +39,10 @@ class IntCodeComputer:
             7: self.compare,
             8: self.compare
         }
+
+    def reset(self):
+        self.current_position = 0
+        self.current_output = 0
 
     def get_num(self, rel_position=1, nargs=1):
         """
@@ -103,11 +108,14 @@ class IntCodeComputer:
     def print_code(self):
         """Prints either using a log object is one has a handler added, or
         directly to the stdout via print()"""
-        formatted_msg = f"Output: {self.get_num(rel_position=1)}"
+        self.current_output = self.get_num(rel_position=1)
+        formatted_msg = f"Output: {self.current_output}"
         if not len(LOG.root.handlers):
             print(formatted_msg)
         else:
             LOG.info(formatted_msg)
+
+        return self.current_output
 
     def jump(self):
         if self.current_op_code[0] == 5:
@@ -116,7 +124,7 @@ class IntCodeComputer:
             check_phrase = self.get_num(rel_position=1) == 0
 
         if check_phrase:
-            jump_position = self.get_num(rel_position=1)
+            jump_position = self.get_num(rel_position=2)
             self.current_position = jump_position
         else:
             # skip processing if failed check
@@ -136,6 +144,7 @@ class IntCodeComputer:
             self.set_num(0, mode=self.get_mode(3))
 
     def compute(self, program_input, custom_inputs):
+        self.reset()
         self.program_input = program_input
         self.custom_inputs = custom_inputs
 
@@ -150,6 +159,8 @@ class IntCodeComputer:
         LOG.info(f"Terminating program on line {self.current_position}, "
                  f"previous op_code {self.current_op_code[0]}, "
                  f"current op_code {self.program_input[self.current_position]}")
+
+        return self.current_output
 
 
 if __name__ == '__main__':
@@ -194,4 +205,4 @@ if __name__ == '__main__':
                     226, 224, 1002, 223, 2, 223, 1005, 224, 659, 1001, 223, 1, 223, 1008, 677, 677, 224, 1002, 223, 2,
                     223, 1006, 224, 674, 1001, 223, 1, 223, 4, 223, 99, 226]
     computer = IntCodeComputer()
-    computer.compute(instructions, [1])
+    computer.compute(instructions, [5])
