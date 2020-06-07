@@ -22,12 +22,13 @@ class IntCodeComputer:
     is evaluated left to right.
     """
 
-    def __init__(self):
-        self.program_input = None
-        self.custom_inputs = None
+    def __init__(self, program_input):
+        self.program_input = program_input
+        self.custom_inputs = []
         self.current_position = 0
-        self.current_op_code = None
+        self.current_op_code = [0]
         self.current_output = None
+        self.done = False
 
         self.process_tree = {
             1: self.add,
@@ -37,7 +38,8 @@ class IntCodeComputer:
             5: self.jump,
             6: self.jump,
             7: self.compare,
-            8: self.compare
+            8: self.compare,
+            99: self.kill
         }
 
     def reset(self):
@@ -82,8 +84,11 @@ class IntCodeComputer:
         and increments the current position
         :return:
         """
-        filled_op_code = "".join(reversed(str(self.program_input[self.current_position])))
-        self.current_op_code = [int(filled_op_code[0])] + [int(c) for c in filled_op_code[2:]]
+        params = [int(c) for c in str(self.program_input[self.current_position])[-3::-1]]
+        opcode = [int(str(self.program_input[self.current_position])[-2:])]
+
+        self.current_op_code = opcode + params
+
         self.current_position += 1
 
     def get_mode(self, arg_position=1):
@@ -143,12 +148,17 @@ class IntCodeComputer:
         else:
             self.set_num(0, mode=self.get_mode(3))
 
-    def compute(self, program_input, custom_inputs):
-        self.reset()
-        self.program_input = program_input
-        self.custom_inputs = custom_inputs
+    def kill(self):
+        LOG.info(f"Terminating program on line {self.current_position}, "
+                 f"previous op_code {self.current_op_code[0]}, "
+                 f"current_output: {self.current_output}")
 
-        while self.program_input[self.current_position] != 99:
+        self.done = True
+
+    def compute(self, custom_input, return_on_output=False):
+        self.custom_inputs.append(custom_input)
+
+        while not self.done:
             LOG.info(f"{self.current_position} - Operating on new instructions.")
             self.set_op_code()
             LOG.info(f"{self.current_position} - Executing op_code - {self.current_op_code}, "
@@ -156,9 +166,8 @@ class IntCodeComputer:
                      f"function - {self.process_tree[self.current_op_code[0]].__name__}()")
             self.process_tree[self.current_op_code[0]]()
 
-        LOG.info(f"Terminating program on line {self.current_position}, "
-                 f"previous op_code {self.current_op_code[0]}, "
-                 f"current op_code {self.program_input[self.current_position]}")
+            if return_on_output and self.current_op_code[0] == 4:
+                return self.current_output
 
         return self.current_output
 
@@ -204,5 +213,6 @@ if __name__ == '__main__':
                     1001, 223, 1, 223, 108, 226, 226, 224, 102, 2, 223, 223, 1005, 224, 644, 1001, 223, 1, 223, 8, 677,
                     226, 224, 1002, 223, 2, 223, 1005, 224, 659, 1001, 223, 1, 223, 1008, 677, 677, 224, 1002, 223, 2,
                     223, 1006, 224, 674, 1001, 223, 1, 223, 4, 223, 99, 226]
-    computer = IntCodeComputer()
-    computer.compute(instructions, [5])
+    computer = IntCodeComputer(instructions)
+    output = computer.compute(5)
+    print(output)
