@@ -3,3 +3,6 @@
 
 # pycharm folder
 .idea/
+
+# pytest files
+.pytest_cache/
