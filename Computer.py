@@ -21,6 +21,7 @@ class IntCodeComputer:
     """
 
     def __init__(self, program_input):
+        self.initial_input = program_input
         self.memory = program_input
         self.custom_inputs = []
         self.current_position = 0
@@ -194,9 +195,11 @@ class IntCodeComputer:
         return self.current_output
 
     def reset(self):
+        self.memory = self.initial_input
         self.current_position = 0
         self.current_output = 0
         self.relative_position = 0
+        self.done = False
 
 
 if __name__ == '__main__':
