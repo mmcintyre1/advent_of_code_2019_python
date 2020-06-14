@@ -18,14 +18,6 @@ class Node:
     y: int
 
 
-def get_angle(start: Node, end: Node):
-    """Calculates the angle between two sets of x, y coordinates."""
-    result = math.atan2(end.x - start.x, start.y - end.y) * 180 / math.pi
-    if result < 0:
-        return 360 + result
-    return result
-
-
 class AsteroidBelt:
     grid = []
 
@@ -52,7 +44,7 @@ class AsteroidBelt:
                 if node == "#":
                     self.asteroids.append(Node(x=x, y=y))
 
-    def get_visible(self, ):
+    def get_visible(self):
         """Iterates through all asteroids in two loops, comparing one location to all other
         locations, and creates a set of angles computed.  Since two Nodes will be 'inline' if
         they share the same angle, the set will filter out asteroids 'behind' other asteroids."""
@@ -60,7 +52,7 @@ class AsteroidBelt:
         max_visible = 0
         for start_asteroid in self.asteroids:
             current_count = len(
-                {get_angle(start_asteroid, end_asteroid) for end_asteroid in self.asteroids if
+                {self.get_angle(start_asteroid, end_asteroid) for end_asteroid in self.asteroids if
                  start_asteroid != end_asteroid}
             )
             if current_count > max_visible:
@@ -68,6 +60,14 @@ class AsteroidBelt:
                 matching_node = start_asteroid
 
         return matching_node, max_visible
+
+    @staticmethod
+    def get_angle(start: Node, end: Node):
+        """Calculates the angle between two sets of x, y coordinates."""
+        result = math.atan2(end.x - start.x, start.y - end.y) * 180 / math.pi
+        if result < 0:
+            return 360 + result
+        return result
 
 
 def main():
