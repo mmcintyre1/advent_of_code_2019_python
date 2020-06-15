@@ -30,6 +30,7 @@ class IntCodeComputer:
         self.current_argument_indexes = None
         self.current_arguments = None
         self.current_output = None
+        self.silence = False
         self.done = False
 
         self.process_tree = {
@@ -129,11 +130,13 @@ class IntCodeComputer:
         """Prints either using a log object is one has a handler added, or
         directly to the stdout via print()"""
         self.current_output = self._get_num(self.current_argument_indexes[0])
-        formatted_msg = f"Output: {self.current_output}"
-        if not len(LOG.root.handlers):
-            print(formatted_msg)
-        else:
-            LOG.info(formatted_msg)
+
+        if not self.silence:
+            formatted_msg = f"Output: {self.current_output}"
+            if not len(LOG.root.handlers):
+                print(formatted_msg)
+            else:
+                LOG.info(formatted_msg)
 
         return self.current_output
 
@@ -178,7 +181,8 @@ class IntCodeComputer:
                  f"argument_indexes - {self.current_argument_indexes}, "
                  f"arguments - {self.current_arguments}")
 
-    def compute(self, custom_input=None, return_on_output=False):
+    def compute(self, custom_input=None, return_on_output=False, silence=True):
+        self.silence = silence
 
         if custom_input is not None:
             self.custom_inputs.append(custom_input)
