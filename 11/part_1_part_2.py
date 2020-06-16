@@ -6,14 +6,14 @@ from puzzle_input import puzzle_input
 
 class HullPainting:
 
-    visited_positions: typing.Dict[typing.Tuple[int, int], int] = {}
     directions: typing.List[typing.Tuple[int, int]] = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
-    def __init__(self, computer: IntCodeComputer):
+    def __init__(self, computer: IntCodeComputer, first_color: int = 0):
         self.computer = computer
         self.current_instruction: int = 0
         self.current_direction: int = 0
         self.current_position: tuple = (0, 0)
+        self.visited_positions: typing.Dict[typing.Tuple[int, int], int] = {self.current_position: first_color}
 
     def change_direction(self, new_direction):
         """Changes current direction, using modulo to make sure things stay within the directional bounds."""
@@ -37,12 +37,25 @@ class HullPainting:
             self.change_direction(self.computer.compute(return_on_output=True))
             self.walk()
 
+    def show_painting(self):
+        data = [[" " for _ in range(50)] for _ in range(6)]
+        for x, y in self.visited_positions.keys():
+            color = self.visited_positions[(x, y)]
+            data[abs(y)][x] = " " if color == 0 else "|"
+        for row in data:
+            print(''.join(row))
+
 
 def main():
     computer = IntCodeComputer(puzzle_input)
-    painting = HullPainting(computer)
-    painting.paint()
-    print(len(painting.visited_positions))
+    first_painting = HullPainting(computer)
+    first_painting.paint()
+    print(len(first_painting.visited_positions))
+
+    computer.reset()
+    second_painting = HullPainting(computer, first_color=1)
+    second_painting.paint()
+    second_painting.show_painting()
 
 
 if __name__ == '__main__':
