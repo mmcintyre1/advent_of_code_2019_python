@@ -25,6 +25,9 @@ class Moon:
         self.position: Vector = Vector(x, y, z)
         self.velocity: Vector = Vector(0, 0, 0)
 
+        self.initial_position = Vector(x, y, z)
+        self.initial_velocity = Vector(0, 0, 0)
+
     def move(self):
         self.position += self.velocity
 
