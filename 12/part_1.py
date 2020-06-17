@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 from itertools import combinations
 
 
-class Plot:
-    def __init__(self, x, y, z):
+class Vector:
+    def __init__(self, x: int, y: int, z: int):
         self.x = x
         self.y = y
         self.z = z
@@ -10,31 +12,31 @@ class Plot:
     def __str__(self):
         return f"x={self.x}, y={self.y}, z={self.z}"
 
-    def __add__(self, other):
+    def __add__(self, other: Vector) -> Vector:
         x = self.x + other.x
         y = self.y + other.y
         z = self.z + other.z
 
-        return Plot(x, y, z)
+        return Vector(x, y, z)
 
 
 class Moon:
-    def __init__(self, x, y, z):
-        self.position = Plot(x, y, z)
-        self.velocity = Plot(0, 0, 0)
+    def __init__(self, x: int, y: int, z: int):
+        self.position: Vector = Vector(x, y, z)
+        self.velocity: Vector = Vector(0, 0, 0)
 
     def move(self):
         self.position += self.velocity
 
-    def add_one(self, attr):
+    def add_one(self, attr: str):
         current_count = getattr(self.velocity, attr)
         setattr(self.velocity, attr, current_count + 1)
 
-    def minus_one(self, attr):
+    def minus_one(self, attr: str):
         current_count = getattr(self.velocity, attr)
         setattr(self.velocity, attr, current_count - 1)
 
-    def compare(self, other):
+    def compare(self, other: Moon):
         for attr in ('x', 'y', 'z'):
             if getattr(self.position, attr) == getattr(other.position, attr):
                 pass
@@ -46,13 +48,13 @@ class Moon:
                     self.minus_one(attr)
                     other.add_one(attr)
 
-    def get_kinetic_energy(self):
+    def get_kinetic_energy(self) -> int:
         return abs(self.position.x) + abs(self.position.y) + abs(self.position.z)
 
-    def get_potential_energy(self):
+    def get_potential_energy(self) -> int:
         return abs(self.velocity.x) + abs(self.velocity.y) + abs(self.velocity.z)
 
-    def get_total_energy(self):
+    def get_total_energy(self) -> int:
         return self.get_kinetic_energy() * self.get_potential_energy()
 
 
@@ -64,7 +66,8 @@ if __name__ == "__main__":
 
     moons = [io, europa, ganymede, callisto]
 
-    for _ in range(1000):
+    for _ in range(1000000000):
+        print(_)
         for moon_group in combinations(moons, 2):
             moon_group[0].compare(moon_group[1])
 
