@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from itertools import combinations
 
-
+# test comment
 class Vector:
     def __init__(self, x: int, y: int, z: int):
         self.x = x
