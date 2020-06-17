@@ -67,7 +67,6 @@ if __name__ == "__main__":
     moons = [io, europa, ganymede, callisto]
 
     for _ in range(1000000000):
-        print(_)
         for moon_group in combinations(moons, 2):
             moon_group[0].compare(moon_group[1])
 
