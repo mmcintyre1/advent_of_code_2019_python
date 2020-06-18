@@ -194,7 +194,7 @@ class IntCodeComputer:
             self.process_tree[self.current_op_code[0]][0]()
 
             if return_on_output and self.current_op_code[0] == 4:
-                return self.current_output
+                yield self.current_output
 
         return self.current_output
 
