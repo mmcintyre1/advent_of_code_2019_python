@@ -20,9 +20,10 @@ class IntCodeComputer:
     is evaluated left to right.
     """
 
-    def __init__(self, program_input):
+    def __init__(self, program_input, input_func=None):
         self.initial_input = program_input
         self.memory = program_input
+        self.input_func = input_func
         self.custom_inputs = []
         self.current_position = 0
         self.relative_position = 0
@@ -122,7 +123,7 @@ class IntCodeComputer:
         self._set_num(dest_index, self._get_num(first_idx) * self._get_num(second_idx))
 
     def get_input(self):
-        num = self.custom_inputs.pop(0)
+        num = self.custom_inputs.pop() if self.custom_inputs else self.input_func()
         LOG.info(f"Getting variable - {num} from custom inputs")
         self._set_num(self.current_argument_indexes[0], num)
 
